@@ -30,6 +30,27 @@ class Index (Resource):
        )
        return response
 api.add_resource(Index,'/')  
+
+class User (Resource):
+    def post(self):
+        new_user = User(
+            name = request.form['name'],
+            updated_at = request.form['updated_at'],
+            created_at =request.form['created_at'])
+        
+        db.session.add(new_user)
+        db.session.commit()
+        response_dict = new_user.to_dict()
+        response = make_response(
+            response_dict,
+            201,
+        )
+        return response
+api.add_resource(User, '/User')
+
+
+        
+        
         
 if __name__ =='_main_':
    app.run(port=5555)

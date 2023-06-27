@@ -139,7 +139,23 @@ class Plants_by_id(Resource):
                 jsonify(response_dict), 404
                 )
             return abort
-
+    def delete(self, id):
+        plant=Plant.query.get(id)
+        if plant:
+            db.session.delete(plant)
+            db.session.commit()
+            return "success", 204
+        else:
+            response_dict={
+                "message": 'Plant not found'
+                }   
+            abort = make_response(
+                jsonify(response_dict), 404
+                )
+            return abort
+        
+    
+    
 api.add_resource(Plants_by_id, '/plants/<int:id>')
 
 

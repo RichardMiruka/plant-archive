@@ -32,6 +32,7 @@ class Index (Resource):
        return response
 api.add_resource(Index,'/')  
 
+#get-user
 
 
 #post-user

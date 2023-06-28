@@ -32,7 +32,8 @@ class Index (Resource):
        return response
 api.add_resource(Index,'/')  
 
-#get-user
+
+
 
 
 #post-user
@@ -51,6 +52,11 @@ class Users(Resource):
             201,
         )
         return response
+    #get-user
+    def get(self):
+        user = [user.to_dict() for user in User.query.all()]
+        return make_response(jsonify(user),200)
+
 api.add_resource(Users, '/users')
 
 #delete-user and patch-user

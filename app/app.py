@@ -160,21 +160,33 @@ class Plants_by_id(Resource):
                 )
             return abort
         
-    
+    def patch(self, id):
+        plant = Plant.query.get(id)
+        
+        if plant:
+            for attr in request.form:
+                setattr(plant, attr, request.form.get(attr))
+            db.session.add(plant)
+            db.session.commit()
+            
+            plant_dict = plant.to_dict()
+            
+            response = make_response(
+                jsonify(plant_dict), 200
+            )
+            return response
+        
+        else:
+            response_dict={
+            "message": 'no user'
+            }
+            response = make_response(
+                jsonify(response_dict),404
+            )
+            return response 
+        
     
 api.add_resource(Plants_by_id, '/plants/<int:id>')
-
-
-
-
-
-
-
-
-#delete-plant and patch-plant
-
-
-
     
 if __name__ =='_main_':
    app.run(port=5000)

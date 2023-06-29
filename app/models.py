@@ -28,4 +28,3 @@ class Plant(db.Model,SerializerMixin):
     updated_at = db.Column('updated_at', db.DateTime, onupdate=db.func.now())
     
     
-          

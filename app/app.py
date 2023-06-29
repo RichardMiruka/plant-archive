@@ -32,8 +32,7 @@ class Index (Resource):
        return response
 api.add_resource(Index,'/')  
 
-
-
+#get-user
 
 
 #post-user
@@ -115,38 +114,81 @@ api.add_resource(UserID,'/users/<int:id>')
 
 
 #post-plant
+
+
+#post-plant
 class Plants(Resource):
-   
-   def post(self):
-      new_plant = Plant(
-      user_id=request.form['user_id'],
-      plant_type = request.form['plant_type']
-
-      )
-      db.session.add(new_plant)
-      db.session.commit()
-      response_dict = new_plant.to_dict()
-      response = make_response(
-      jsonify(response_dict),
-      201,
-      )
-      return response
-
-
-
+    def post(self):
+        new_plant=Plant(
+        plant_type = request.form['plant_type'],
+        user_id= request.form['user_id']
+        )
+        db.session.add(new_plant)
+        db.session.commit()
+        response=make_response (jsonify(new_plant.to_dict()), 201)
+        return response
+    def get(self):
+        plants=[plant.to_dict() for plant in Plant.query.all()]
+        return make_response(jsonify(plants),200)
+    
 api.add_resource(Plants, '/plants')
 
-
-
-
-
-
-
-
-#delete-plant and patch-plant
-
-
-
+class Plants_by_id(Resource):
+    def get(self, id=None):
+        if id:
+            plant = Plant.query.filter_by(id=id).first().to_dict()
+            if plant:
+                return make_response(jsonify(plant), 200)
+        else:
+            response_dict={
+                "message": 'Plant not found'
+                }   
+            abort = make_response(
+                jsonify(response_dict), 404
+                )
+            return abort
+    def delete(self, id):
+        plant=Plant.query.get(id)
+        if plant:
+            db.session.delete(plant)
+            db.session.commit()
+            return "success", 204
+        else:
+            response_dict={
+                "message": 'Plant not found'
+                }   
+            abort = make_response(
+                jsonify(response_dict), 404
+                )
+            return abort
+        
+    def patch(self, id):
+        plant = Plant.query.get(id)
+        
+        if plant:
+            for attr in request.form:
+                setattr(plant, attr, request.form.get(attr))
+            db.session.add(plant)
+            db.session.commit()
+            
+            plant_dict = plant.to_dict()
+            
+            response = make_response(
+                jsonify(plant_dict), 200
+            )
+            return response
+        
+        else:
+            response_dict={
+            "message": 'no user'
+            }
+            response = make_response(
+                jsonify(response_dict),404
+            )
+            return response 
+        
+    
+api.add_resource(Plants_by_id, '/plants/<int:id>')
     
 if __name__ =='_main_':
    app.run(port=5000)

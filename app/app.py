@@ -20,7 +20,7 @@ class Index (Resource):
    def get(self):
        response_dict={
            'Status':'success',
-           "message": "Welcome to the API"
+           "message": "api"
        }
        response = make_response(
            jsonify(response_dict
